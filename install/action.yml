@@ -11,7 +11,6 @@ inputs:
     default: "."
 outputs: {}
 runs:
-  shell: bash
   using: "composite"
   steps:
     - name: 📥 Checkout code
@@ -22,6 +21,7 @@ runs:
         node-version: ${{ inputs.node-version }}
         path: ${{ inputs.path }}
     - name: 📥 Install dependencies
+      shell: bash
       run: |
         cd ${{ inputs.path }}
         yarn install --frozen-lockfile
