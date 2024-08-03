@@ -8,7 +8,7 @@ on:
         required: true
         default: "app"
         type: string
-      run_build_command:
+      build_command:
         description: "Command to build the application"
         required: false
         default: ""
@@ -96,14 +96,14 @@ jobs:
         if: ${{ inputs.export_version_key != '' }}
         run: |
           cd ${{ inputs.path }}
-          echo "export ${{ inputs.export_version_key }}=${VERSION}" >> .env
+          echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> $GITHUB_ENV
       - name: 🛠️ Build and Push Docker Image
         uses: kilianpichard/actions/build@main
         with:
           path: ${{ inputs.path }}
           version: ${{ env.VERSION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          runBuildCommand: ${{ inputs.runBuildCommand }}
+          runBuildCommand: ${{ inputs.build_command }}
 
   deploy:
     name: 🚀 Deploy to Production
