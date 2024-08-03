@@ -44,8 +44,8 @@ runs:
           LATEST_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
           echo $LATEST_VERSION | sed 's/v//' > ${{ inputs.path }}/version.txt
         fi
-        VERSION=$(cat ${{ inputs.path }}/version.txt)
-        echo "SEMANTIC_VERSION=$VERSION" >> $GITHUB_OUTPUT
+        SEMANTIC_VERSION=$(cat ${{ inputs.path }}/version.txt)
+        echo "SEMANTIC_VERSION=$SEMANTIC_VERSION" >> $GITHUB_OUTPUT
 
     - name: Get short SHA
       id: slug
