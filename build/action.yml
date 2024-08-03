@@ -70,7 +70,6 @@ runs:
         body: |
           Docker image built: ghcr.io/${{github.repository}}:${{ inputs.version }}
           Version: ${{ inputs.version }}
-          ![Docker Image](https://img.shields.io/badge/Docker%20Image-${{ inputs.version }}-blue)
 
     - name: 🏷️ Tag Develop
       if: github.ref == 'refs/heads/develop'
