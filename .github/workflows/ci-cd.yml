@@ -18,6 +18,18 @@ on:
         required: false
         default: ""
         type: string
+      app_name:
+        description: "Name of the application"
+        required: true
+        type: string
+      app_folder:
+        description: "Folder of the application"
+        required: true
+        type: string
+      stack_name:
+        description: "Name of the stack"
+        required: true
+        type: string
 
 env:
   EC2_SSH: ${{ secrets.EC2_SSH }}
@@ -97,6 +109,6 @@ jobs:
           ec2_ssh: ${{ secrets.EC2_SSH }}
           ec2_user: ${{ secrets.EC2_USER }}
           ec2_host: ${{ secrets.EC2_HOST }}
-          app_name: ${{ github.ref == 'refs/heads/main' && 'KARVEO_APP' || 'KARVEO_APP_STAGING' }}
-          app_folder: "karveo"
-          stack_name: "karveo"
+          app_name: ${{ github.ref == 'refs/heads/main' && '${{ inputs.app_name }}' || '${{ inputs.app_name }}_STAGING' }}
+          app_folder: ${{ inputs.app_folder }}
+          stack_name: ${{ inputs.stack_name }}
