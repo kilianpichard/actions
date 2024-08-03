@@ -55,7 +55,7 @@ runs:
       uses: peter-evans/create-or-update-comment@v1
       if: github.event_name == 'pull_request'
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.github-token }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           Docker image built: ghcr.io/${{github.repository}}:${{ inputs.version }}
