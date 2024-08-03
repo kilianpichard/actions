@@ -23,8 +23,6 @@ on:
         required: true
       EC2_HOST:
         required: true
-      GITHUB_TOKEN:
-        required: true
 
 jobs:
   install:
