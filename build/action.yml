@@ -18,10 +18,11 @@ inputs:
     required: false
     default: "latest"
   github-token:
-    description: "Token GitHub
+    description: "Token GitHub"
     required: true
 
 outputs: {}
+
 runs:
   using: "composite"
   steps:
