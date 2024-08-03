@@ -56,10 +56,10 @@ runs:
       id: set_app_version
       shell: bash
       run: |
-        if [ "${{ github.ref }}" == "refs/heads/main" && ${{ inputs.useSemanticRelease == 'true' }}]; then
+        if [ "${{ github.ref }}" == "refs/heads/main" ] && [ "${{ inputs.useSemanticRelease }}" == "true" ]; then
           echo "VERSION=${{ inputs.semantic-version}}" >> $GITHUB_OUTPUT
           echo "::set-output name=VERSION::${{ inputs.semantic-version}}"
-        elif [ "${{ github.ref }}" == "refs/heads/main"  ]; then
+        elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
           echo "VERSION=production-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
           echo "::set-output name=VERSION::production-${{ steps.slug.outputs.SLUG }}"
         elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
