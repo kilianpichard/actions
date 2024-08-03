@@ -1,5 +1,5 @@
 name: "🧪 Run Tests"
-description: "Checkout code, setup Node.js, and run tests."
+description: "Checkout code, setup Node.js, and run tests."s
 inputs:
   node-version:
     description: "Version de Node.js"
