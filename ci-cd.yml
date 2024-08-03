@@ -1,15 +1,30 @@
 name: CI/CD 🚀
 
 on:
-  pull_request:
-    branches:
-      - "*"
-      - "!main"
-  push:
-    branches:
-      - develop
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path to the application"
+        required: true
+        default: "app"
+      runBuildCommand:
+        description: "Command to build the application"
+        required: true
+        default: "yarn build"
+
+    secrets:
+      DOCKER_LOGIN:
+        required: true
+      DOCKER_TOKEN:
+        required: true
+      EC2_SSH:
+        required: true
+      EC2_USER:
+        required: true
+      EC2_HOST:
+        required: true
+      GITHUB_TOKEN:
+        required: true
 
 jobs:
   install:
