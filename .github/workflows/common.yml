@@ -32,10 +32,6 @@ on:
         type: string
 
     secrets:
-      DOCKER_LOGIN:
-        required: true
-      DOCKER_TOKEN:
-        required: true
       EC2_SSH:
         required: true
       EC2_USER:
