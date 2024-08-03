@@ -14,20 +14,18 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: 📦 Setup
-        uses: kilianpichard/actions/setup@main
-        with:
-          path: api
-    - name: 🚀 Release with semantic-release
-      run: |
-        cd api
-        npx semantic-release
-    - name: 🏷️ Get version
-      id: get_version
-      run: |
-        if [ ! -f api/version.txt ]; then
-          LATEST_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo $LATEST_VERSION | sed 's/v//' > api/version.txt
-        fi
-        VERSION=$(cat api/version.txt)
-        echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: 💾 Restore or Cache node_modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ inputs.path }}/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-

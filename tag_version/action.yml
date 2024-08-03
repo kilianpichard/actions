@@ -1,4 +1,4 @@
-name: "🏷️ Tag Version"
+name: "🏷️ Tag version"
 description: "Checkout code, setup Node.js, and tag version."
 inputs:
   node-version:
@@ -9,17 +9,25 @@ inputs:
     description: "Chemin vers le dossier contenant le fichier package.json"
     required: false
     default: "."
-outputs: {}
+outputs:
+  VERSION: ${{ steps.get_version.outputs.VERSION }}
 runs:
   using: "composite"
   steps:
     - name: 📦 Setup
-      uses: kilianpichard/actions/setup@main
-      with:
-        node-version: ${{ inputs.node-version }}
-        path: ${{ inputs.path }}
-    - name: 🧹 Lint code
-      shell: bash
+        uses: kilianpichard/actions/setup@main
+        with:
+          path: api
+    - name: 🚀 Release with semantic-release
       run: |
-        cd ${{ inputs.path }}
-        yarn lint
+        cd api
+        npx semantic-release
+    - name: 🏷️ Get version
+      id: get_version
+      run: |
+        if [ ! -f api/version.txt ]; then
+          LATEST_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo $LATEST_VERSION | sed 's/v//' > api/version.txt
+        fi
+        VERSION=$(cat api/version.txt)
+        echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
