@@ -9,8 +9,7 @@ inputs:
     description: "Chemin vers le dossier contenant le fichier package.json"
     required: false
     default: "."
-outputs:
-  VERSION: ${{ steps.get_version.outputs.VERSION }}
+outputs: {}
 runs:
   using: "composite"
   steps:
