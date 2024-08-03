@@ -31,6 +31,18 @@ on:
         required: true
         type: string
 
+    secrets:
+      DOCKER_LOGIN:
+        required: true
+      DOCKER_TOKEN:
+        required: true
+      EC2_SSH:
+        required: true
+      EC2_USER:
+        required: true
+      EC2_HOST:
+        required: true
+
 env:
   EC2_SSH: ${{ secrets.EC2_SSH }}
   EC2_USER: ${{ secrets.EC2_USER }}
