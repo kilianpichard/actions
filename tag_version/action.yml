@@ -36,7 +36,7 @@ runs:
         npx semantic-release
 
     - name: 🏷️ Get version
-      if: ${{ inputs.useSemanticRelease == 'false' }}
+      if: ${{ inputs.useSemanticRelease == 'true' }}
       shell: bash
       id: version
       run: |
