@@ -8,13 +8,8 @@ on:
         required: true
         default: "app"
         type: string
-      runBuildCommand:
+      run_build_command:
         description: "Command to build the application"
-        required: false
-        default: ""
-        type: string
-      preBuildCommand:
-        description: "Command to run before building the application"
         required: false
         default: ""
         type: string
@@ -29,6 +24,11 @@ on:
       stack_name:
         description: "Name of the stack"
         required: true
+        type: string
+      export_version_key:
+        description: "Key to export the version"
+        required: false
+        default: ""
         type: string
 
     secrets:
@@ -93,8 +93,10 @@ jobs:
         with:
           path: ${{ inputs.path }}
       - name: Pre Build
-        if: ${{ inputs.preBuildCommand != '' }}
-        run: ${{ inputs.preBuildCommand }}
+        if: ${{ inputs.export_version_key != '' }}
+        run: |
+          cd ${{ inputs.path }}
+          echo "export ${{ inputs.export_version_key }}=${VERSION}" >> .env
       - name: 🛠️ Build and Push Docker Image
         uses: kilianpichard/actions/build@main
         with:
