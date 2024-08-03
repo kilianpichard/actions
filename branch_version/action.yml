@@ -2,10 +2,6 @@ name: "🏷️ Determine version from branch"
 description: "Checkout code, setup Node.js, and determine version from branch."
 
 inputs:
-  node-version:
-    description: "Version de Node.js"
-    required: false
-    default: "21"
   path:
     description: "Chemin vers le dossier contenant le fichier package.json"
     required: false
