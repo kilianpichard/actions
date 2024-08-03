@@ -1,0 +1,26 @@
+name: "Install Dependencies"
+description: "Checkout code, setup Node.js, and install dependencies."
+inputs:
+  node-version:
+    description: "Version de Node.js"
+    required: false
+    default: "21"
+  path:
+    description: "Chemin vers le dossier contenant le fichier package.json"
+    required: false
+    default: "."
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    - name: 📦 Setup
+      uses: kilianpichard/actions/setup
+      with:
+        node-version: ${{ inputs.node-version }}
+        path: ${{ inputs.path }}
+    - name: 📥 Install dependencies
+      run: |
+        cd ${{ inputs.path }}
+        yarn install --frozen-lockfile

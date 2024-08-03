@@ -1,0 +1,30 @@
+name: "Setup Node.js and Restore Cache"
+description: "Checkout code, setup Node.js, and restore node_modules cache."
+inputs:
+  node-version:
+    description: "Version de Node.js"
+    required: false
+    default: "21"
+  path:
+    description: "Chemin vers le dossier contenant le fichier package.json"
+    required: false
+    default: "."
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: 💾 Restore or Cache node_modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ inputs.path }}/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
