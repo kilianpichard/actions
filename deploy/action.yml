@@ -59,8 +59,11 @@ runs:
         script: |
           source ./export.sh  
           cd apps/${{ inputs.app_folder }}
-          docker stack deploy --compose-file docker-compose.yml ${{ inputs.stack_name }} --with-registry-auth
-
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker stack deploy --compose-file docker-compose.yml ${{ inputs.stack_name }} --with-registry-auth
+          else
+            docker stack deploy --compose-file docker-compose.staging.yml ${{ inputs.stack_name }}-staging --with-registry-auth
+          fi
     - name: 🧹 Clean up SSH information
       run: rm -rf ~/.ssh
       shell: bash
