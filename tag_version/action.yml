@@ -22,22 +22,22 @@ runs:
     - name: 📦 Setup
       uses: kilianpichard/actions/setup@main
       with:
-        path: api
+        path: ${{ inputs.path }}
 
     - name: 🚀 Release with semantic-release
       shell: bash
       run: |
-        cd api
+        cd ${{ inputs.path }}
         npx semantic-release
 
     - name: 🏷️ Get version
       id: get_version # ID pour faire référence dans les outputs
       shell: bash
       run: |
-        if [ ! -f api/version.txt ]; then
+        if [ ! -f ${{ inputs.path }}/version.txt ]; then
           LATEST_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo $LATEST_VERSION | sed 's/v//' > api/version.txt
+          echo $LATEST_VERSION | sed 's/v//' > ${{ inputs.path }}/version.txt
         fi
-        VERSION=$(cat api/version.txt)
+        VERSION=$(cat ${{ inputs.path }}/version.txt)
         echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
         echo "::set-output name=VERSION::$VERSION"  # Important pour définir la sortie
