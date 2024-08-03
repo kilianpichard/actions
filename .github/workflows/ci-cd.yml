@@ -13,6 +13,11 @@ on:
         required: true
         default: "yarn build"
         type: string
+      preBuildCommand:
+        description: "Command to run before building the application"
+        required: false
+        default: ""
+        type: string
 
     secrets:
       DOCKER_LOGIN:
@@ -71,10 +76,9 @@ jobs:
         uses: kilianpichard/actions/setup@main
         with:
           path: ${{ inputs.path }}
-      - name: Configure .env with VITE_APP_VERSION
-        run: |
-          cd ${{ inputs.path }}
-          echo "VITE_APP_VERSION=${{ env.VERSION }}" >> .env
+      - name: Pre Build
+        if: ${{ inputs.preBuildCommand != '' }}
+        run: ${{ inputs.preBuildCommand }}
       - name: 🛠️ Build and Push Docker Image
         uses: kilianpichard/actions/build@main
         with:
