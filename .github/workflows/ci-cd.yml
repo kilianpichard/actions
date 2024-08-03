@@ -10,8 +10,8 @@ on:
         type: string
       runBuildCommand:
         description: "Command to build the application"
-        required: true
-        default: "yarn build"
+        required: false
+        default: ""
         type: string
       preBuildCommand:
         description: "Command to run before building the application"
