@@ -49,11 +49,11 @@ runs:
         cd ${{ inputs.path }}
         echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> .env
     - name: Run Build
-      if: ${{ inputs.runBuildCommand != '' }}
+      if: ${{ inputs.build_command != '' }}
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        ${{ inputs.runBuildCommand }}
+        ${{ inputs.build_command }}
     - name: 🚀 Run Buildx (push image)
       shell: bash
       run: |
