@@ -29,14 +29,14 @@ runs:
         path: ${{ inputs.path }}
 
     - name: 🚀 Release with semantic-release
-      if: ${{ inputs.useSemanticRelease == 'true' }} && ${{ github.ref == 'refs/heads/main' }}
+      if: ${{ inputs.useSemanticRelease == 'true' && github.ref == 'refs/heads/main' }}
       shell: bash
       run: |
         cd ${{ inputs.path }}
         npx semantic-release
 
     - name: 🏷️ Get version
-      if: ${{ inputs.useSemanticRelease == 'true' }} && ${{ github.ref == 'refs/heads/main' }}
+      if: ${{ inputs.useSemanticRelease == 'true' && github.ref == 'refs/heads/main' }}
       shell: bash
       id: version
       run: |
