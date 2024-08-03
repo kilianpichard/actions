@@ -12,7 +12,7 @@ inputs:
   runBuildCommand:
     description: "Commande pour construire l'image Docker"
     required: false
-    default: false
+    default: ""
   version:
     description: "Version de l'image Docker"
     required: false
@@ -39,7 +39,7 @@ runs:
         username: ${{ github.actor }}
         password: ${{ inputs.github-token }}
     - name: Run Build
-      if: ${{ inputs.runBuildCommand != false }}
+      if: ${{ inputs.runBuildCommand != '' }}
       shell: bash
       run: |
         cd ${{ inputs.path }}
