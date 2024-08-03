@@ -30,7 +30,7 @@ runs:
         npx semantic-release
 
     - name: 🏷️ Get version
-      id: get_version
+      id: get_version # ID pour faire référence dans les outputs
       shell: bash
       run: |
         if [ ! -f api/version.txt ]; then
@@ -39,4 +39,4 @@ runs:
         fi
         VERSION=$(cat api/version.txt)
         echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-        echo "::set-output name=VERSION::$VERSION"
+        echo "::set-output name=VERSION::$VERSION"  # Important pour définir la sortie
