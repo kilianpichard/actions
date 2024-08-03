@@ -17,6 +17,9 @@ inputs:
     description: "Version de l'image Docker"
     required: false
     default: "latest"
+  github-token:
+    description: "Token GitHub
+    required: true
 
 outputs: {}
 runs:
@@ -33,13 +36,15 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ inputs.github-token }}
     - name: Run Build
       if: ${{ inputs.runBuildCommand }}
+      shell: bash
       run: |
         cd ${{ inputs.path }}
         ${{ inputs.runBuildCommand }}
     - name: 🚀 Run Buildx (push image)
+      shell: bash
       run: |
         docker buildx build --target production --platform linux/arm64 \
         --push \
@@ -58,6 +63,7 @@ runs:
 
     - name: 🏷️ Tag Develop
       if: github.ref == 'refs/heads/develop'
+      shell: bash
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
