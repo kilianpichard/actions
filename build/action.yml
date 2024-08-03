@@ -47,7 +47,7 @@ runs:
       if: ${{ inputs.export_version_key != '' }}
       run: |
         cd ${{ inputs.path }}
-        echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> $GITHUB_ENV
+        echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> .env
     - name: Run Build
       if: ${{ inputs.runBuildCommand != '' }}
       shell: bash
