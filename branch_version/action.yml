@@ -1,0 +1,40 @@
+name: "🏷️ Determine version from branch"
+description: "Checkout code, setup Node.js, and determine version from branch."
+
+inputs:
+  node-version:
+    description: "Version de Node.js"
+    required: false
+    default: "21"
+  path:
+    description: "Chemin vers le dossier contenant le fichier package.json"
+    required: false
+    default: "."
+  semantic-version:
+    description: "Version du projet"
+    required: false
+    default: "0.0.0"
+
+outputs:
+  VERSION: # Sortie pour récupérer la version
+    description: "Version du projet"
+    value: ${{ steps.get_version.outputs.VERSION }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get short SHA
+      id: slug
+      shell: bash
+      run: echo "SLUG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+    - name: Set App Version
+      id: set_app_version
+      shell: bash
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "VERSION=${{ inputs.semantic-version}}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+          echo "VERSION=staging-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=pull_request-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
+        fi
