@@ -9,7 +9,7 @@ inputs:
     description: "Chemin vers le dossier contenant le fichier package.json"
     required: false
     default: "."
-  runBuildCommand:
+  build_command:
     description: "Commande pour construire l'image Docker"
     required: false
     default: ""
@@ -20,6 +20,10 @@ inputs:
   github-token:
     description: "Token GitHub"
     required: true
+  export_version_key:
+    description: "Clé pour exporter la version"
+    required: false
+    default: ""
 
 outputs: {}
 
@@ -44,6 +48,11 @@ runs:
       run: |
         cd ${{ inputs.path }}
         ${{ inputs.runBuildCommand }}
+    - name: Pre Build
+        if: ${{ inputs.export_version_key != '' }}
+        run: |
+          cd ${{ inputs.path }}
+          echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> $GITHUB_ENV
     - name: 🚀 Run Buildx (push image)
       shell: bash
       run: |

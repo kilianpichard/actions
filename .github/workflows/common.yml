@@ -88,22 +88,14 @@ jobs:
       DOCKER_TARGET_PLATFORM: linux/arm64
       VERSION: ${{ needs.release.outputs.version }}
     steps:
-      - name: Setup
-        uses: kilianpichard/actions/setup@main
-        with:
-          path: ${{ inputs.path }}
-      - name: Pre Build
-        if: ${{ inputs.export_version_key != '' }}
-        run: |
-          cd ${{ inputs.path }}
-          echo "export ${{ inputs.export_version_key }}=${{ env.VERSION }}" >> $GITHUB_ENV
       - name: 🛠️ Build and Push Docker Image
         uses: kilianpichard/actions/build@main
         with:
           path: ${{ inputs.path }}
           version: ${{ env.VERSION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          runBuildCommand: ${{ inputs.build_command }}
+          build_command: ${{ inputs.build_command }}
+          export_version_key: ${{ inputs.export_version_key }}
 
   deploy:
     name: 🚀 Deploy to Production
