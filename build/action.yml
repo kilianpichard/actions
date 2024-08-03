@@ -12,7 +12,7 @@ inputs:
   runBuildCommand:
     description: "Commande pour construire l'image Docker"
     required: false
-    default: undefined
+    default: false
   version:
     description: "Version de l'image Docker"
     required: false
