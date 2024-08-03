@@ -16,7 +16,7 @@ runs:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
     - name: 📦 Setup
-      uses: kilianpichard/actions/setup
+      uses: kilianpichard/actions/setup@main
       with:
         node-version: ${{ inputs.node-version }}
         path: ${{ inputs.path }}
