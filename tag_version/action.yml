@@ -14,15 +14,11 @@ inputs:
     description: "Utiliser semantic-release pour taguer la version"
     required: false
     default: "true"
-  useBranchRelease:
-    description: "Utiliser la branche pour taguer la version"
-    required: false
-    default: "true"
 
 outputs:
   VERSION: # Sortie pour récupérer la version
     description: "Version du projet"
-    value: ${{ steps.get_version.outputs.VERSION }}
+    value: ${{ steps.set_app_version.outputs.VERSION }}
 
 runs:
   using: "composite"
@@ -41,7 +37,6 @@ runs:
 
     - name: 🏷️ Get version
       if: ${{ inputs.useSemanticRelease == 'false' }}
-      id: get_version # ID pour faire référence dans les outputs
       shell: bash
       run: |
         if [ ! -f ${{ inputs.path }}/version.txt ]; then
@@ -56,16 +51,21 @@ runs:
       id: slug
       shell: bash
       run: echo "SLUG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
     - name: Set App Version
       id: set_app_version
       shell: bash
       run: |
-        if [ "${{ github.ref }}" == "refs/heads/main" && ${{ inputs.useBranchRelease == 'true' }} ]; then
+        if [ "${{ github.ref }}" == "refs/heads/main" && ${{ inputs.useSemanticRelease == 'true' }]; then
           echo "VERSION=${{ inputs.semantic-version}}" >> $GITHUB_OUTPUT
+          echo "::set-output name=VERSION::${{ inputs.semantic-version}}"
         elif [ "${{ github.ref }}" == "refs/heads/main"  ]; then
           echo "VERSION=production-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
+          echo "::set-output name=VERSION::production-${{ steps.slug.outputs.SLUG }}"
         elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
           echo "VERSION=staging-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
+          echo "::set-output name=VERSION::staging-${{ steps.slug.outputs.SLUG }}"
         else
           echo "VERSION=pull_request-${{ steps.slug.outputs.SLUG }}" >> $GITHUB_OUTPUT
+          echo "::set-output name=VERSION::pull_request-${{ steps.slug.outputs.SLUG }}"
         fi
