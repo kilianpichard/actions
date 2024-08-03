@@ -11,6 +11,7 @@ inputs:
     default: "."
 outputs: {}
 runs:
+  shell: bash
   using: "composite"
   steps:
     - name: 📥 Checkout code
