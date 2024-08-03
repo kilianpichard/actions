@@ -1,5 +1,5 @@
-name: "📥 Install dependencies"
-description: "Checkout code, setup Node.js, and install dependencies."
+name: "🧪 Run Tests"
+description: "Checkout code, setup Node.js, and lint code."
 inputs:
   node-version:
     description: "Version de Node.js"
@@ -18,8 +18,8 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         path: ${{ inputs.path }}
-    - name: 📥 Install dependencies
+    - name: 🧪 Run Tests
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        yarn install --frozen-lockfile
+        yarn test
