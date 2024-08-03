@@ -31,6 +31,16 @@ on:
       EC2_HOST:
         required: true
 
+env:
+  DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+  EC2_SSH: ${{ secrets.EC2_SSH }}
+  EC2_USER: ${{ secrets.EC2_USER }}
+  EC2_HOST: ${{ secrets.EC2_HOST }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   install:
     name: 📥 Install Dependencies
