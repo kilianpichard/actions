@@ -1,0 +1,66 @@
+name: "🚀 Deploy to Production"
+description: "Deploy the application to production using SSH and Docker"
+inputs:
+  version:
+    description: "The version of the application to deploy"
+    required: true
+  ec2_ssh:
+    description: "SSH private key for EC2 instance"
+    required: true
+  ec2_host:
+    description: "EC2 Host"
+    required: true
+  ec2_user:
+    description: "EC2 User"
+    required: true
+  app_name:
+    description: "Application name (e.g., NEUSION_APP, KARVEO_API, etc.)"
+    required: true
+  app_folder:
+    description: "Application folder (e.g., neusion-app, karveo-api, etc.)"
+    required: true
+  stack_name:
+    description: "Docker stack name"
+    required: true
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔑 Install SSH client
+      run: sudo apt-get install openssh-client -y
+      shell: bash
+
+    - name: 🔧 Setup SSH key
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ inputs.ec2_ssh }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ inputs.ec2_host }} > ~/.ssh/known_hosts
+      shell: bash
+
+    - name: 🐳 SSH into VPS and set new version
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.ec2_host }}
+        port: 22
+        username: ${{ inputs.ec2_user }}
+        key: ${{ inputs.ec2_ssh }}
+        script: sed -i '/^${{ inputs.app_name }}_VERSION=/d' ~/versions.txt && echo '${{ inputs.app_name }}_VERSION=${{ inputs.version }}' >> ~/versions.txt
+
+    - name: 🚀 Update the stack
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ inputs.ec2_host }}
+        port: 22
+        username: ${{ inputs.ec2_user }}
+        key: ${{ inputs.ec2_ssh }}
+        script: |
+          source ./export.sh  
+          cd apps/${{ inputs.app_folder }}
+          docker stack deploy --compose-file docker-compose.yml ${{ inputs.stack_name }} --with-registry-auth
+
+    - name: 🧹 Clean up SSH information
+      run: rm -rf ~/.ssh
+      shell: bash
