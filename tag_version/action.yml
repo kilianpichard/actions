@@ -12,8 +12,9 @@ inputs:
     default: "."
 
 outputs:
-  VERSION:
-    description: "Version du package"
+  VERSION: # Sortie pour récupérer la version
+    description: "Version du projet"
+    value: ${{ steps.get_version.outputs.VERSION }}
 
 runs:
   using: "composite"
