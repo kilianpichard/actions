@@ -39,3 +39,4 @@ runs:
         fi
         VERSION=$(cat api/version.txt)
         echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "::set-output name=VERSION::$VERSION"
