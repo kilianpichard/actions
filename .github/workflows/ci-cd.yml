@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Install Dependencies
-        uses: ./actions/install@main
+        uses: kilianpichard/actions/install@main
         with:
           path: ${{ inputs.path }}
 
@@ -42,7 +42,7 @@ jobs:
     needs: install
     steps:
       - name: 🧹 Lint Code
-        uses: ./actions/lint@main
+        uses: kilianpichard/actions/lint@main
         with:
           path: ${{ inputs.path }}
 
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: 🏷️ Tag Version
         id: tag_version
-        uses: ./actions/tag_version@main
+        uses: kilianpichard/actions/tag_version@main
         with:
           path: ${{ inputs.path }}
 
@@ -68,7 +68,7 @@ jobs:
       VERSION: ${{ needs.release.outputs.version }}
     steps:
       - name: Setup
-        uses: ./actions/setup@main
+        uses: kilianpichard/actions/setup@main
         with:
           path: ${{ inputs.path }}
       - name: Configure .env with VITE_APP_VERSION
@@ -76,7 +76,7 @@ jobs:
           cd ${{ inputs.path }}
           echo "VITE_APP_VERSION=${{ env.VERSION }}" >> .env
       - name: 🛠️ Build and Push Docker Image
-        uses: ./actions/build@main
+        uses: kilianpichard/actions/build@main
         with:
           path: ${{ inputs.path }}
           version: ${{ env.VERSION }}
@@ -91,7 +91,7 @@ jobs:
       VERSION: ${{ needs.release.outputs.version }}
     steps:
       - name: 🚀 Deploy to Production
-        uses: ./actions/deploy@main
+        uses: kilianpichard/actions/deploy@main
         with:
           version: ${{ env.VERSION }}
           ec2_ssh: ${{ secrets.EC2_SSH }}
