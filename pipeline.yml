@@ -1,4 +1,5 @@
 name: CI/CD 🚀
+
 on:
   pull_request:
     branches:
@@ -10,47 +11,15 @@ on:
       - main
   workflow_dispatch:
 
-on:
-  workflow_call:
-    inputs:
-      branches:
-        required: true
-        type: array
-      docker_login:
-        required: true
-        type: string
-      docker_token:
-        required: true
-        type: string
-      ec2_ssh:
-        required: true
-        type: string
-      ec2_user:
-        required: true
-        type: string
-      ec2_host:
-        required: true
-        type: string
-      github_token:
-        required: true
-        type: string
-      registry:
-        required: true
-        type: string
-      image_name:
-        required: true
-        type: string
-
-
 jobs:
   install:
     name: 📥 Install Dependencies
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Install Dependencies
-        uses: kilianpichard/actions/install@main
+        uses: ./actions/install@main
         with:
-          path: api
+          path: ${{ inputs.path }}
 
   lint:
     name: 🧹 Lint Code
@@ -58,72 +27,61 @@ jobs:
     needs: install
     steps:
       - name: 🧹 Lint Code
-        uses: kilianpichard/actions/lint@main
+        uses: ./actions/lint@main
         with:
-          path: api
-
-  tests:
-    name: 🧪 Run Tests
-    runs-on: ubuntu-latest
-    needs: install
-    steps:
-      - name: 🧪 Run Tests
-        uses: kilianpichard/actions/test@main
-        with:
-          path: api
-        env:
-          MONGO_BD_URL: ${{ secrets.MONGO_BD_URL }}
-          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
-          EMAIL: ${{ secrets.EMAIL }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-      - name: 📊 Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          path: ${{ inputs.path }}
 
   release:
     name: 🏷️ Tag Version
     needs: install
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.tag_version.outputs.VERSION }} # Assurez-vous que l'ID est correct
+      version: ${{ steps.tag_version.outputs.VERSION }}
     steps:
       - name: 🏷️ Tag Version
-        id: tag_version # ID unique pour l'étape
-        uses: kilianpichard/actions/tag_version@main
+        id: tag_version
+        uses: ./actions/tag_version@main
         with:
-          path: api
+          path: ${{ inputs.path }}
 
   build:
     name: 🛠️ Build and Push Docker Image
-    needs: [release, tests, lint]
+    needs: [release, lint]
     runs-on: ubuntu-latest
     env:
       DOCKER_TARGET_PLATFORM: linux/arm64
-      VERSION: ${{ needs.release.outputs.version }} # Version obtenue du job 'release'
+      VERSION: ${{ needs.release.outputs.version }}
     steps:
-      - name: 🛠️ Build and Push Docker Image
-        uses: kilianpichard/actions/build@main
+      - name: Setup
+        uses: ./actions/setup@main
         with:
-          path: api
+          path: ${{ inputs.path }}
+      - name: Configure .env with VITE_APP_VERSION
+        run: |
+          cd ${{ inputs.path }}
+          echo "VITE_APP_VERSION=${{ env.VERSION }}" >> .env
+      - name: 🛠️ Build and Push Docker Image
+        uses: ./actions/build@main
+        with:
+          path: ${{ inputs.path }}
           version: ${{ env.VERSION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          runBuildCommand: ${{ inputs.runBuildCommand }}
 
   deploy:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
     needs: [release, build]
     env:
-      VERSION: ${{ needs.release.outputs.version }} # Version obtenue du job 'release'
+      VERSION: ${{ needs.release.outputs.version }}
     steps:
       - name: 🚀 Deploy to Production
-        uses: kilianpichard/actions/deploy@main
+        uses: ./actions/deploy@main
         with:
           version: ${{ env.VERSION }}
           ec2_ssh: ${{ secrets.EC2_SSH }}
           ec2_user: ${{ secrets.EC2_USER }}
           ec2_host: ${{ secrets.EC2_HOST }}
-          app_name: ${{ github.ref == 'refs/heads/main' && 'KARVEO_API' || 'KARVEO_API_STAGING' }}
+          app_name: ${{ github.ref == 'refs/heads/main' && 'KARVEO_APP' || 'KARVEO_APP_STAGING' }}
           app_folder: "karveo"
           stack_name: "karveo"
