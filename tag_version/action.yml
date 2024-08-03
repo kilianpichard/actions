@@ -1,5 +1,5 @@
-name: "🧪 Run Tests"
-description: "Checkout code, setup Node.js, and run tests."
+name: "🏷️ Tag Version"
+description: "Checkout code, setup Node.js, and tag version."
 inputs:
   node-version:
     description: "Version de Node.js"
@@ -18,8 +18,8 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         path: ${{ inputs.path }}
-    - name: 🧪 Run Tests
+    - name: 🧹 Lint code
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        yarn test
+        yarn lint
