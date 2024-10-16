@@ -50,7 +50,7 @@ env:
 jobs:
   install:
     name: 📥 Install Dependencies
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: 📥 Install Dependencies
         uses: kilianpichard/actions/install@main
@@ -59,7 +59,7 @@ jobs:
 
   lint:
     name: 🧹 Lint Code
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: install
     steps:
       - name: 🧹 Lint Code
@@ -70,7 +70,7 @@ jobs:
   release:
     name: 🏷️ Tag Version
     needs: install
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       version: ${{ steps.tag_version.outputs.VERSION }}
     steps:
@@ -83,7 +83,7 @@ jobs:
   build:
     name: 🛠️ Build and Push Docker Image
     needs: [release, lint]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       DOCKER_TARGET_PLATFORM: linux/arm64
       VERSION: ${{ needs.release.outputs.version }}
@@ -99,7 +99,7 @@ jobs:
 
   deploy:
     name: 🚀 Deploy to Production
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [release, build]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     env:
